@@ -47,7 +47,7 @@ The API health check is available at `/api/v1/health`. The free Render service m
 1. Import this repository as a Netlify site. The included `netlify.toml` configures the client build and SPA fallback.
 2. Set these environment variables in Netlify:
    - `VITE_API_URL`: `https://<your-render-service>.onrender.com/api/v1`
-   - `VITE_SOCKET_URL`: `https://<your-render-service>.onrender.com`
+   - `VITE_SOCKET_URL` (optional): `https://<your-render-service>.onrender.com`. If omitted, the client derives the Socket.IO host from `VITE_API_URL`.
 3. Trigger a new deploy after setting the variables. Vite embeds them at build time.
 4. Set the same Netlify site origin in the Render `FRONTEND_URL` variable.
 
