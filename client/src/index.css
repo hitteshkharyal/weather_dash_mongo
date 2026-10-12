@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base Styles ──────────────────────────────────────────── */
+
+:root {
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(148, 163, 184, 0.15);
+  --glass-bg-light: rgba(255, 255, 255, 0.08);
+  --theme-primary: #020617;
+  --theme-gradient: linear-gradient(to bottom, rgba(15,23,42,0.8), rgba(2,6,23,1));
+  --theme-card-bg: rgba(15, 23, 42, 0.5);
+  --theme-card-border: rgba(148, 163, 184, 0.1);
+  --theme-card-hover: rgba(51, 141, 255, 0.3);
+  --theme-card-shadow: rgba(51, 141, 255, 0.1);
+}
+
+/* ─── Weather Themes ────────────────────────────────────────── */
+[data-weather="sunny"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(255, 200, 50, 0.2), rgba(200, 100, 20, 0.1), #020617);
+  --theme-card-bg: rgba(255, 200, 50, 0.08);
+  --theme-card-border: rgba(255, 200, 50, 0.15);
+  --theme-card-hover: rgba(255, 200, 50, 0.4);
+  --theme-card-shadow: rgba(255, 200, 50, 0.2);
+}
+[data-weather="clear"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(30, 60, 120, 0.3), rgba(15, 30, 60, 0.1), #020617);
+  --theme-card-bg: rgba(30, 60, 120, 0.08);
+  --theme-card-border: rgba(30, 60, 120, 0.15);
+  --theme-card-hover: rgba(89, 176, 255, 0.4);
+  --theme-card-shadow: rgba(89, 176, 255, 0.2);
+}
+[data-weather="cloudy"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(100, 116, 139, 0.2), rgba(51, 65, 85, 0.1), #020617);
+  --theme-card-bg: rgba(100, 116, 139, 0.1);
+  --theme-card-border: rgba(100, 116, 139, 0.2);
+  --theme-card-hover: rgba(148, 163, 184, 0.4);
+  --theme-card-shadow: rgba(148, 163, 184, 0.2);
+}
+[data-weather="rainy"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(30, 58, 95, 0.3), rgba(15, 23, 42, 0.2), #020617);
+  --theme-card-bg: rgba(30, 58, 95, 0.1);
+  --theme-card-border: rgba(59, 130, 246, 0.15);
+  --theme-card-hover: rgba(59, 130, 246, 0.4);
+  --theme-card-shadow: rgba(59, 130, 246, 0.2);
+}
+[data-weather="fog"], [data-weather="mist"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(180, 180, 190, 0.15), rgba(100, 100, 110, 0.1), #020617);
+  --theme-card-bg: rgba(180, 180, 190, 0.08);
+  --theme-card-border: rgba(156, 163, 175, 0.15);
+  --theme-card-hover: rgba(156, 163, 175, 0.4);
+  --theme-card-shadow: rgba(156, 163, 175, 0.2);
+}
+[data-weather="smog"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(120, 100, 50, 0.2), rgba(60, 50, 25, 0.1), #020617);
+  --theme-card-bg: rgba(120, 100, 50, 0.1);
+  --theme-card-border: rgba(202, 138, 4, 0.15);
+  --theme-card-hover: rgba(202, 138, 4, 0.4);
+  --theme-card-shadow: rgba(202, 138, 4, 0.2);
+}
+[data-weather="storm"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(30, 0, 50, 0.25), rgba(15, 0, 25, 0.15), #020617);
+  --theme-card-bg: rgba(30, 0, 50, 0.12);
+  --theme-card-border: rgba(139, 92, 246, 0.15);
+  --theme-card-hover: rgba(139, 92, 246, 0.4);
+  --theme-card-shadow: rgba(139, 92, 246, 0.2);
+}
+[data-weather="hailstorm"] {
+  --theme-gradient: linear-gradient(to bottom, rgba(0, 20, 40, 0.3), rgba(0, 10, 20, 0.2), #020617);
+  --theme-card-bg: rgba(0, 20, 40, 0.15);
+  --theme-card-border: rgba(103, 232, 249, 0.15);
+  --theme-card-hover: rgba(103, 232, 249, 0.4);
+  --theme-card-shadow: rgba(103, 232, 249, 0.2);
+}
+
+.theme-bg-gradient {
+  background: var(--theme-gradient);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #020617;
+  color: #e2e8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Glassmorphism Utilities ──────────────────────────────── */
+
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+  }
+
+  .glass-sm {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+  }
+
+  .glass-card {
+    background: var(--theme-card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--theme-card-border);
+    border-radius: 20px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    border-color: var(--theme-card-hover);
+    box-shadow: 0 0 30px var(--theme-card-shadow);
+    transform: translateY(-2px);
+  }
+
+  .glass-input {
+    @apply bg-surface-900/50 border border-surface-700/50 rounded-xl px-4 py-3
+           text-surface-100 placeholder-surface-500
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50
+           transition-all duration-200;
+    backdrop-filter: blur(8px);
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white
+           bg-gradient-to-r from-brand-600 to-brand-500
+           hover:from-brand-500 hover:to-brand-400
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50
+           transition-all duration-200 transform hover:scale-[1.02]
+           active:scale-[0.98] shadow-glow-blue;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold
+           bg-surface-800/60 text-surface-200 border border-surface-700/50
+           hover:bg-surface-700/60 hover:border-surface-600
+           focus:outline-none focus:ring-2 focus:ring-surface-500/30
+           transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 rounded-lg font-medium text-sm
+           bg-red-500/20 text-red-400 border border-red-500/30
+           hover:bg-red-500/30 hover:border-red-500/50
+           transition-all duration-200;
+  }
+}
+
+/* ─── Gauge Circle Animation ──────────────────────────────── */
+
+.gauge-circle {
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* ─── Weather Background Animations ──────────────────────── */
+
+.rain-drop {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(transparent, rgba(100, 180, 255, 0.6));
+  animation: rain linear infinite;
+  pointer-events: none;
+}
+
+.fog-layer {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(ellipse, rgba(200, 200, 200, 0.15) 0%, transparent 70%);
+  animation: fogDrift ease-in-out infinite;
+  pointer-events: none;
+}
+
+.sun-ray {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 70% 20%, rgba(255, 200, 50, 0.15) 0%, transparent 50%);
+  animation: sunRays ease-in-out infinite;
+  pointer-events: none;
+}
+
+.lightning-flash {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.05);
+  animation: lightning ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ─── Skeleton Loader ──────────────────────────────────────── */
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.03) 0%, 
+    rgba(255, 255, 255, 0.08) 50%, 
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
