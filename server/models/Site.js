@@ -36,7 +36,4 @@ const siteSchema = new mongoose.Schema(
   }
 );
 
-// Index for fast API key lookups during device auth
-siteSchema.index({ apiKey: 1 });
-
 module.exports = mongoose.model('Site', siteSchema);
