@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { X509Certificate } from 'node:crypto';
+import { getDefaultRootCaForUrl } from '../src/config/tlsCertificates.js';
 import { buildFirmwareConfig } from '../src/utils/firmwareConfig.js';
 
 const sensorCatalog = [
@@ -19,6 +21,16 @@ const sensorCatalog = [
   ['anemometer', 'ENABLE_ANEMOMETER'],
   ['windvane', 'ENABLE_WIND_VANE'],
 ].map(([type, macro]) => ({ type, macro }));
+
+test('Render firmware uses the verified Google Trust Services root certificate by default', () => {
+  const certificate = new X509Certificate(getDefaultRootCaForUrl(
+    'https://weather-dash-mongo.onrender.com/api/v1/sensors/data'
+  ));
+
+  assert.equal(certificate.subject, certificate.issuer);
+  assert.match(certificate.subject, /CN=GTS Root R4/);
+  assert.equal(getDefaultRootCaForUrl('https://other.example.com/api/data'), '');
+});
 
 function buildConfig(board, serverUrl = 'http://localhost:5000/api/v1/sensors/data') {
   return buildFirmwareConfig({

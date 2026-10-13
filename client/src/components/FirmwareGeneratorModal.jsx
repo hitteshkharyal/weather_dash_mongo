@@ -3,6 +3,7 @@ import { Download, X } from 'lucide-react';
 import firmwareSketch from '../../../firmware/weather_station.ino?raw';
 import api from '../api/axios';
 import { API_CONFIG } from '../config/api';
+import { getDefaultRootCaForUrl } from '../config/tlsCertificates';
 import { buildFirmwareConfig } from '../utils/firmwareConfig';
 
 function downloadText(filename, content) {
@@ -25,7 +26,7 @@ export default function FirmwareGeneratorModal({ site, onClose }) {
   const [wifiSsid, setWifiSsid] = useState('');
   const [wifiPassword, setWifiPassword] = useState('');
   const [serverUrl, setServerUrl] = useState(API_CONFIG.sensorDataUrl);
-  const [rootCertificate, setRootCertificate] = useState('');
+  const [rootCertificate, setRootCertificate] = useState(() => getDefaultRootCaForUrl(API_CONFIG.sensorDataUrl));
   const [error, setError] = useState('');
 
   const selectedAnalogTypes = ['mq2', 'mq3', 'mq7', 'mq135', 'rainsensor', 'soilmoisture', 'windvane']
@@ -161,7 +162,9 @@ export default function FirmwareGeneratorModal({ site, onClose }) {
                   placeholder="-----BEGIN CERTIFICATE-----"
                   className="glass-input mt-2 w-full font-mono text-xs"
                 />
-                <span className="mt-1 block text-xs text-surface-500">Required for verified HTTPS connections. The generator never disables TLS certificate checks.</span>
+                <span className="mt-1 block text-xs text-surface-500">
+                  The WeatherDash Render certificate is pre-filled. For another HTTPS server, replace it with that server&apos;s trusted root CA. Certificate checks stay enabled.
+                </span>
               </label>
             )}
           </div>
