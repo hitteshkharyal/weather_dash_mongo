@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
-
-const apiUrl = import.meta.env.VITE_API_URL;
-const socketUrl =
-  import.meta.env.VITE_SOCKET_URL ||
-  (apiUrl ? apiUrl.replace(/\/api\/v1\/?$/, '') : '/');
+import { API_CONFIG } from '../config/api';
 
 /**
  * Custom hook for Socket.io real-time sensor updates.
@@ -19,7 +15,7 @@ export default function useSocket(siteId) {
 
   useEffect(() => {
     // Connect to Socket.io server
-    const socket = io(socketUrl, {
+    const socket = io(API_CONFIG.socketBaseUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,

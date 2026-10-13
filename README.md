@@ -5,11 +5,15 @@ This repository contains a React/Vite client, an Express/MongoDB API with Socket
 ## Local development
 
 1. Copy `server/.env.example` to `server/.env` and set your MongoDB connection and local admin credentials.
-2. Install and start the API:
+2. Install and start the API against the local test database (PowerShell):
 
    ```sh
    cd server
    npm ci
+   $env:NODE_ENV = "test"
+   $env:MONGODB_TEST_URI = "mongodb://localhost:27017/weather_test_db"
+   $env:PORT = "5000"
+   $env:FRONTEND_URL = "http://localhost:3000,http://<computer-lan-ip>:3000"
    npm run dev
    ```
 
@@ -20,7 +24,7 @@ This repository contains a React/Vite client, an Express/MongoDB API with Socket
    VITE_SOCKET_URL=/
    ```
 
-4. In another terminal, install and start the client:
+4. In another PowerShell terminal, install and start the client:
 
    ```sh
    cd client
@@ -28,7 +32,9 @@ This repository contains a React/Vite client, an Express/MongoDB API with Socket
    npm run dev
    ```
 
-The Vite development server proxies API and Socket.IO traffic to `http://localhost:5000`.
+The Vite development server proxies API and Socket.IO traffic to `http://localhost:5000` and listens on the LAN so ESP devices on the same trusted Wi-Fi can reach it. Open the dashboard at `http://<computer-lan-ip>:3000` when generating firmware; the generated API URL must use that LAN address, not `localhost`. Both development servers are exposed to the local network; do not expose these ports to the public internet.
+
+Helmet is enabled on the API for HTTP security headers, and API responses are marked `no-store`. Helmet does not hide browser route paths; passwords, API keys, and tokens should not be put in URL paths or query strings. Authentication tokens are stored in HttpOnly cookies.
 
 ## Deploy the API to Render
 
@@ -46,9 +52,9 @@ The API health check is available at `/api/v1/health`. The free Render service m
 
 1. Import this repository as a Netlify site. The included `netlify.toml` configures the client build and SPA fallback.
 2. Set these environment variables in Netlify:
-   - `VITE_API_URL`: `https://<your-render-service>.onrender.com/api/v1`
-   - `VITE_SOCKET_URL` (optional): `https://<your-render-service>.onrender.com`. If omitted, the client derives the Socket.IO host from `VITE_API_URL`.
-3. Trigger a new deploy after setting the variables. Vite embeds them at build time.
+   - `VITE_API_URL` (optional): `https://weather-dash-mongo.onrender.com/api/v1`. The production build defaults to this API when the variable is unset or is a relative path.
+   - `VITE_SOCKET_URL` (optional): `https://weather-dash-mongo.onrender.com`. If omitted, the client derives the Socket.IO host from the API URL.
+3. Trigger a new deploy after setting or changing the variables. Vite embeds them at build time.
 4. Set the same Netlify site origin in the Render `FRONTEND_URL` variable.
 
 After changing either service's environment variables, redeploy the relevant service. Authentication uses secure cross-site cookies in production, so the client and API must both use HTTPS.
@@ -57,7 +63,7 @@ After changing either service's environment variables, redeploy the relevant ser
 
 1. Sign in as an administrator and open **Admin Console → Sites**.
 2. Use the radio icon on a site to assign sensors from the supported 15-item environmental sensor catalog. The selected sensors are listed on the site dashboard; unassigned sensor data is rejected by the API.
-3. Use **Firmware** to choose ESP32 or ESP8266, enter the site device API key (pre-filled from the site) and Wi-Fi name/password, and generate `config.h` plus `weather_station.ino`. Keep `config.h` private: it contains Wi-Fi credentials and the site's device API key.
+3. Open the dashboard on your computer's LAN address (not `localhost`) when generating firmware for a device on the same Wi-Fi. Use **Firmware** to choose ESP32 or ESP8266, enter the site device API key (pre-filled from the site) and Wi-Fi name/password, and generate `config.h` plus `weather_station.ino`. In a production build, the sensor API URL defaults to `https://weather-dash-mongo.onrender.com/api/v1/sensors/data`; in local development, it uses the address hosting the dashboard, so use your computer's LAN address. `localhost` points back to the ESP. Keep `config.h` private: it contains Wi-Fi credentials and the site's device API key.
 4. Put both generated files in the same Arduino sketch folder, select the matching board, install the libraries listed below, and compile before flashing.
 
 The firmware supports BME280, DHT11, DHT22, BMP280, SCD41, MQ-2, MQ-3, MQ-7, MQ-135, LTR390, BH1750, rain-drop, soil-moisture, anemometer, and wind-vane sensors. MQ sensors report raw ADC values, not calibrated gas concentration; sensor-specific calibration and warm-up are required before interpreting those readings. ESP8266 has only one analog input, and ESP32 has a limited number of Wi-Fi-compatible ADC inputs, so multiple analog sensors may require an external multiplexer and pin changes. BME280 and BMP280 also need compatible, non-conflicting I2C addresses.

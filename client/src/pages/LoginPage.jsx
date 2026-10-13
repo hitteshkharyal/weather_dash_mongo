@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Cloud, Zap, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import BrandLink from '../components/BrandLink';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -33,6 +34,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-transparent">
+      <header className="absolute left-6 top-6 z-10">
+        <BrandLink />
+      </header>
+
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient orbs */}
@@ -53,7 +58,7 @@ export default function LoginPage() {
         <motion.div
           className="absolute w-[400px] h-[400px] rounded-full opacity-15"
           style={{
-            background: 'radial-gradient(circle, rgba(139,92,246,0.5), transparent 70%)',
+            background: 'radial-gradient(circle, rgba(249,115,22,0.35), transparent 70%)',
             bottom: '-5%',
             left: '-5%',
           }}

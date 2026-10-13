@@ -16,12 +16,13 @@ import SkeletonLoader from './SkeletonLoader';
  */
 
 const COLOR_MAP = {
-  blue:   { stroke: '#338DFF', glow: 'shadow-glow-blue',   bg: 'from-blue-500/10 to-blue-600/5',   text: 'text-blue-400' },
-  green:  { stroke: '#22C55E', glow: 'shadow-glow-green',  bg: 'from-green-500/10 to-green-600/5', text: 'text-green-400' },
-  amber:  { stroke: '#F59E0B', glow: 'shadow-glow-amber',  bg: 'from-amber-500/10 to-amber-600/5', text: 'text-amber-400' },
-  red:    { stroke: '#EF4444', glow: 'shadow-glow-red',    bg: 'from-red-500/10 to-red-600/5',     text: 'text-red-400' },
-  purple: { stroke: '#A855F7', glow: 'shadow-glow-blue',   bg: 'from-purple-500/10 to-purple-600/5', text: 'text-purple-400' },
-  cyan:   { stroke: '#06B6D4', glow: 'shadow-glow-blue',   bg: 'from-cyan-500/10 to-cyan-600/5',   text: 'text-cyan-400' },
+  blue:   { stroke: '#38BDF8', glow: 'shadow-glow-blue',  bg: 'from-sky-400/15 to-sky-600/5',       text: 'text-sky-300' },
+  green:  { stroke: '#38BDF8', glow: 'shadow-glow-blue',  bg: 'from-sky-400/15 to-sky-600/5',       text: 'text-sky-300' },
+  amber:  { stroke: '#FB923C', glow: 'shadow-glow-amber', bg: 'from-orange-400/15 to-orange-600/5', text: 'text-orange-300' },
+  red:    { stroke: '#FB923C', glow: 'shadow-glow-amber', bg: 'from-orange-400/15 to-orange-600/5', text: 'text-orange-300' },
+  purple: { stroke: '#38BDF8', glow: 'shadow-glow-blue',  bg: 'from-sky-400/15 to-sky-600/5',       text: 'text-sky-300' },
+  cyan:   { stroke: '#38BDF8', glow: 'shadow-glow-blue',  bg: 'from-sky-400/15 to-sky-600/5',       text: 'text-sky-300' },
+  indigo: { stroke: '#FB923C', glow: 'shadow-glow-amber', bg: 'from-orange-400/15 to-orange-600/5', text: 'text-orange-300' },
 };
 
 export default function GaugeCard({

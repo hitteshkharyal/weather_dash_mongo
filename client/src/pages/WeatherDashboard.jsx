@@ -17,6 +17,7 @@ import WeatherConditionBadge from '../components/WeatherConditionBadge';
 import DiagnosticsPanel from '../components/DiagnosticsPanel';
 import TimeSeriesChart from '../components/TimeSeriesChart';
 import api from '../api/axios';
+import BrandLink from '../components/BrandLink';
 
 export default function WeatherDashboard() {
   const { user, logout, isAdmin } = useAuth();
@@ -69,9 +70,9 @@ export default function WeatherDashboard() {
     setCondition('unknown');
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
   };
 
   const r = latestReading || {};
@@ -92,12 +93,7 @@ export default function WeatherDashboard() {
       <header className="sticky top-0 z-40 glass border-b border-surface-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Cloud size={22} className="text-brand-400" />
-              <h1 className="text-lg font-display font-bold text-white hidden sm:block">
-                Weather Dashboard
-              </h1>
-            </div>
+            <BrandLink />
             <div className="h-6 w-px bg-surface-800 hidden sm:block" />
             <SiteSelector
               selectedSiteId={selectedSiteId}

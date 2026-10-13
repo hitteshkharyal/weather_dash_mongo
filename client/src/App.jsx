@@ -5,8 +5,20 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import WeatherDashboard from './pages/WeatherDashboard';
+import { useEffect } from 'react';
 
 function App() {
+  useEffect(() => {
+    const onPageShow = (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>

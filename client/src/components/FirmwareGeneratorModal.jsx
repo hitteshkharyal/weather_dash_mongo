@@ -2,10 +2,8 @@ import { useMemo, useState } from 'react';
 import { Download, X } from 'lucide-react';
 import firmwareSketch from '../../../firmware/weather_station.ino?raw';
 import api from '../api/axios';
+import { API_CONFIG } from '../config/api';
 import { buildFirmwareConfig } from '../utils/firmwareConfig';
-
-const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
-const DEFAULT_SERVER_URL = `${new URL(API_URL, window.location.origin).origin}/api/v1/sensors/data`;
 
 function downloadText(filename, content) {
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -26,7 +24,7 @@ export default function FirmwareGeneratorModal({ site, onClose }) {
   const [apiKey, setApiKey] = useState(site.apiKey || '');
   const [wifiSsid, setWifiSsid] = useState('');
   const [wifiPassword, setWifiPassword] = useState('');
-  const [serverUrl, setServerUrl] = useState(DEFAULT_SERVER_URL);
+  const [serverUrl, setServerUrl] = useState(API_CONFIG.sensorDataUrl);
   const [rootCertificate, setRootCertificate] = useState('');
   const [error, setError] = useState('');
 
@@ -148,6 +146,9 @@ export default function FirmwareGeneratorModal({ site, onClose }) {
           <label className="text-sm text-surface-300 sm:col-span-2">
             Sensor API URL
             <input value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} className="glass-input mt-2 w-full font-mono text-xs" />
+            <span className="mt-1 block text-xs text-surface-500">
+              For a device on your Wi-Fi, use your computer's LAN address here; `localhost` points back to the ESP.
+            </span>
           </label>
           {isHttps && (
             <label className="text-sm text-surface-300 sm:col-span-2">

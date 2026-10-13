@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Cloud, Wind, Droplets, Shield, Activity, ArrowRight } from 'lucide-react';
+import { Wind, Shield, Activity, ArrowRight } from 'lucide-react';
 import AnimatedBackground from '../components/AnimatedBackground';
+import BrandLink from '../components/BrandLink';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -14,12 +15,7 @@ export default function LandingPage() {
 
       {/* Header */}
       <header className="relative z-10 py-6 px-8 flex justify-between items-center border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <Cloud className="text-brand-400" size={32} />
-          <span className="text-2xl font-display font-bold text-white tracking-tight">
-            Weather<span className="text-brand-400">Dash</span>
-          </span>
-        </div>
+        <BrandLink />
         <button
           onClick={() => navigate('/login')}
           className="btn-primary px-6 py-2 rounded-full font-medium shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all"
@@ -46,7 +42,7 @@ export default function LandingPage() {
           
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold text-white leading-tight tracking-tight">
             Visualize your climate <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-sky-400 to-orange-300">
               in stunning detail.
             </span>
           </h1>
@@ -74,17 +70,17 @@ export default function LandingPage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full mt-24"
         >
           <FeatureCard 
-            icon={<Activity className="text-rose-400" size={28} />}
+            icon={<Activity className="text-sky-300" size={28} />}
             title="Real-time Telemetry"
             description="Ultra-low latency Socket.io connections stream live data from your hardware to your screen."
           />
           <FeatureCard 
-            icon={<Wind className="text-cyan-400" size={28} />}
+            icon={<Wind className="text-orange-300" size={28} />}
             title="Immersive UX"
             description="The interface dynamically transforms with the weather, utilizing cinematic animations and glassmorphism."
           />
           <FeatureCard 
-            icon={<Shield className="text-emerald-400" size={28} />}
+            icon={<Shield className="text-sky-300" size={28} />}
             title="Secure & Scalable"
             description="Role-based access control, secure HTTP-only cookies, and encrypted multi-site management."
           />
@@ -102,7 +98,7 @@ export default function LandingPage() {
 function FeatureCard({ icon, title, description }) {
   return (
     <div className="glass-card p-8 rounded-2xl text-left hover:scale-[1.02] transition-transform duration-300">
-      <div className="w-14 h-14 rounded-xl bg-surface-800/50 flex items-center justify-center mb-6 border border-white/5">
+      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-300/10 to-orange-300/10 flex items-center justify-center mb-6 border border-sky-200/10">
         {icon}
       </div>
       <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>

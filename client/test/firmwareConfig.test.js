@@ -46,6 +46,8 @@ test('firmware config enables only sensors assigned to this site', () => {
   assert.match(config, /#define DEVICE_API_KEY "site-api-key"/);
   assert.match(config, /#define SERVER_HAS_ROOT_CA false/);
   assert.match(config, /#define MQ2_PIN 34/);
+  assert.match(config, /struct SensorReadings \{/);
+  assert.match(config, /#define HTTP_RETRY_DELAY_MS 2000/);
 });
 
 test('firmware config targets ESP8266 pins and enables TLS verification when configured', () => {

@@ -11,6 +11,50 @@
 static const char SERVER_ROOT_CA[] PROGMEM = R"WEATHER_CA(
 )WEATHER_CA";
 
+struct SensorReadings {
+  float temperature;
+  float humidity;
+  float pressure;
+  bool hasBME280;
+
+  float dht11Temperature;
+  float dht11Humidity;
+  bool hasDHT11;
+  float dht22Temperature;
+  float dht22Humidity;
+  bool hasDHT22;
+  float bmpTemperature;
+  float bmpPressure;
+  bool hasBMP280;
+
+  float co2;
+  bool hasSCD41;
+
+  float mq2Value;
+  float mq3Value;
+  float mq7Value;
+  float mq135Value;
+  bool hasMQ2;
+  bool hasMQ3;
+  bool hasMQ7;
+  bool hasMQ135;
+
+  float uvIndex;
+  float ambientLight;
+  bool hasLTR390;
+  bool hasBH1750;
+
+  float windSpeed;
+  float windDirection;
+  bool hasAnemometer;
+  bool hasWindVane;
+
+  float rainIntensity;
+  bool hasRainSensor;
+  float soilMoisture;
+  bool hasSoilMoisture;
+};
+
 #if defined(ESP32)
   #define I2C_SDA_PIN       21
   #define I2C_SCL_PIN       22

@@ -232,55 +232,6 @@ void initSensors() {
 // Sensor Reading Functions
 // ═══════════════════════════════════════════════════════════════════
 
-struct SensorReadings {
-  // BME280
-  float temperature;
-  float humidity;
-  float pressure;
-  bool hasBME280;
-
-  float dht11Temperature;
-  float dht11Humidity;
-  bool hasDHT11;
-  float dht22Temperature;
-  float dht22Humidity;
-  bool hasDHT22;
-  float bmpTemperature;
-  float bmpPressure;
-  bool hasBMP280;
-
-  // SCD41
-  float co2;
-  bool hasSCD41;
-
-  float mq2Value;
-  float mq3Value;
-  float mq7Value;
-  float mq135Value;
-  bool hasMQ2;
-  bool hasMQ3;
-  bool hasMQ7;
-  bool hasMQ135;
-
-  // LTR390
-  float uvIndex;
-  float ambientLight;
-  bool hasLTR390;
-  bool hasBH1750;
-
-  // Anemometer
-  float windSpeed;
-  float windDirection;
-  bool hasAnemometer;
-  bool hasWindVane;
-
-  // Rain Sensor
-  float rainIntensity;   // 0–100 (0=dry, 100=heavy rain)
-  bool hasRainSensor;
-  float soilMoisture;
-  bool hasSoilMoisture;
-};
-
 SensorReadings readAllSensors() {
   SensorReadings r;
   r.hasBME280 = false;

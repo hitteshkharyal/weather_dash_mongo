@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users, MapPin, Plus, Trash2, Key, Link2, Shield,
+  Users, MapPin, Plus, Trash2, Key, Link2,
   LogOut, LayoutDashboard, X, Check, Radio, Code2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import SiteSensorManager from '../components/SiteSensorManager';
 import FirmwareGeneratorModal from '../components/FirmwareGeneratorModal';
+import BrandLink from '../components/BrandLink';
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -170,9 +171,9 @@ export default function AdminDashboard() {
     );
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -181,7 +182,8 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-40 glass border-b border-surface-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Shield size={22} className="text-brand-400" />
+            <BrandLink compact />
+            <div className="h-6 w-px bg-surface-700" />
             <h1 className="text-lg font-display font-bold text-white">Admin Console</h1>
           </div>
           <div className="flex items-center gap-3">

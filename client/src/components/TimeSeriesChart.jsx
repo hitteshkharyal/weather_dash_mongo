@@ -15,13 +15,13 @@ import {
 import api from '../api/axios';
 
 const METRICS = [
-  { key: 'temperature', label: 'Temperature', unit: '°C', color: '#EF4444', checked: true },
-  { key: 'humidity',    label: 'Humidity',    unit: '%',  color: '#3B82F6', checked: true },
-  { key: 'co2',         label: 'CO₂',         unit: 'ppm',color: '#A855F7', checked: false },
-  { key: 'uvIndex',     label: 'UV Index',    unit: '',   color: '#F59E0B', checked: false },
-  { key: 'windSpeed',   label: 'Wind Speed',  unit: 'km/h',color: '#06B6D4', checked: false },
-  { key: 'pressure',    label: 'Pressure',    unit: 'hPa',color: '#22C55E', checked: false },
-  { key: 'rainIntensity', label: 'Rain',      unit: '%',  color: '#6366F1', checked: false },
+  { key: 'temperature', label: 'Temperature', unit: '°C', color: '#FB923C', checked: true },
+  { key: 'humidity',    label: 'Humidity',    unit: '%',  color: '#38BDF8', checked: true },
+  { key: 'co2',         label: 'CO₂',         unit: 'ppm',color: '#7DD3FC', checked: false },
+  { key: 'uvIndex',     label: 'UV Index',    unit: '',   color: '#FDBA74', checked: false },
+  { key: 'windSpeed',   label: 'Wind Speed',  unit: 'km/h',color: '#0EA5E9', checked: false },
+  { key: 'pressure',    label: 'Pressure',    unit: 'hPa',color: '#7DD3FC', checked: false },
+  { key: 'rainIntensity', label: 'Rain',      unit: '%',  color: '#FB923C', checked: false },
 ];
 
 const TIME_RANGES = [

@@ -41,7 +41,16 @@ const io = new SocketServer(server, {
 
 // ─── Middleware ────────────────────────────────────────────────
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    referrerPolicy: { policy: 'no-referrer' },
+  })
+);
+app.use('/api/', (_req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(cookieParser());
 app.use(express.json({ limit: '1mb' }));
@@ -120,7 +129,7 @@ app.use('/api/v1/sensors', sensorRoutes);
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    message: 'Route not found',
   });
 });
 
@@ -144,7 +153,7 @@ const start = async () => {
   await connectDB();
   await seedAdmin();
 
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n🌤  Weather Dashboard API`);
     console.log(`   ➜ http://localhost:${PORT}`);
     console.log(`   ➜ Health: http://localhost:${PORT}/api/v1/health`);

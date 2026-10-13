@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_CONFIG } from '../config/api';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
+  baseURL: API_CONFIG.apiBaseUrl,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -25,7 +26,7 @@ api.interceptors.response.use(
     const isPublicPage = window.location.pathname === '/login' || window.location.pathname === '/';
 
     if (error.response && error.response.status === 401 && !isAuthCheck && !isPublicPage) {
-      window.location.href = '/login';
+      window.location.replace('/login');
     }
     return Promise.reject(error);
   }
