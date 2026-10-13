@@ -222,7 +222,7 @@ function LightningEffect() {
 
 export default function AnimatedBackground({ condition = 'unknown' }) {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-surface-950 transition-colors duration-[2000ms]" data-weather={condition}>
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none transition-colors duration-[2000ms]" data-weather={condition}>
       
       {/* The base dynamic gradient is handled by CSS variables based on data-weather on root */}
       <div className="absolute inset-0 theme-bg-gradient transition-all duration-[2000ms]" />

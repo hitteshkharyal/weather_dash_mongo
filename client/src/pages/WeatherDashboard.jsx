@@ -75,6 +75,13 @@ export default function WeatherDashboard() {
   };
 
   const r = latestReading || {};
+  const extraMeasurements = [
+    ['mq2Level', 'MQ-2 gas signal', 'raw ADC'],
+    ['mq3Level', 'MQ-3 gas signal', 'raw ADC'],
+    ['mq7Level', 'MQ-7 gas signal', 'raw ADC'],
+    ['mq135Level', 'MQ-135 air signal', 'raw ADC'],
+    ['soilMoisture', 'Soil moisture', '%'],
+  ].filter(([key]) => r[key] !== undefined);
 
   return (
     <div className="min-h-screen relative">
@@ -139,7 +146,7 @@ export default function WeatherDashboard() {
       <CO2LevelAnimation co2={r.co2} />
 
       {/* Main Content */}
-      <main className={`mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-500
+      <main className={`relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 transition-all duration-500
                        ${isFullscreen ? 'max-w-[95%] xl:max-w-[1600px] mt-4 scale-[1.02]' : 'max-w-7xl'}`}>
         {/* Weather Condition & Last Update */}
         <motion.div
@@ -271,6 +278,15 @@ export default function WeatherDashboard() {
                 </p>
               </div>
             )}
+            {extraMeasurements.map(([key, label, unit]) => (
+              <div key={key} className="glass-card p-4 text-center">
+                <p className="text-xs text-surface-500 uppercase tracking-wider mb-1">{label}</p>
+                <p className="text-2xl font-display font-bold text-white">
+                  {Number(r[key]).toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                </p>
+                <p className="text-xs text-surface-500 mt-0.5">{unit}</p>
+              </div>
+            ))}
           </motion.div>
         )}
       </main>
@@ -290,7 +306,7 @@ export default function WeatherDashboard() {
       )}
 
       {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <footer className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="border-t border-surface-800/50 pt-4 text-center">
           <p className="text-xs text-surface-600">
             IoT Weather Dashboard • Logged in as{' '}

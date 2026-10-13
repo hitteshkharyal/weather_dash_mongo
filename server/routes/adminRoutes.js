@@ -7,6 +7,8 @@ const {
   updateUser,
   deleteUser,
   getSites,
+  getSensorCatalog,
+  assignSensorsToSite,
   createSite,
   updateSite,
   deleteSite,
@@ -24,6 +26,8 @@ router.put('/users/:id/assign-sites', assignSitesToUser);
 
 // ─── Site Management ──────────────────────
 router.route('/sites').get(getSites).post(createSite);
+router.get('/sensors/catalog', getSensorCatalog);
+router.put('/sites/:id/sensors', assignSensorsToSite);
 router.route('/sites/:id').put(updateSite).delete(deleteSite);
 router.put('/sites/:id/regenerate-key', regenerateSiteApiKey);
 

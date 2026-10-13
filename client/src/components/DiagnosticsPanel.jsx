@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Activity, Wifi, WifiOff, Clock, RefreshCw } from 'lucide-react';
+import { Activity, WifiOff, Clock, RefreshCw } from 'lucide-react';
 import api from '../api/axios';
 
 /**
@@ -10,10 +10,20 @@ import api from '../api/axios';
 
 const SENSOR_LABELS = {
   bme280:     { name: 'BME280',      desc: 'Temp / Humidity / Pressure' },
+  dht11:      { name: 'DHT11',       desc: 'Temperature / Humidity' },
+  dht22:      { name: 'DHT22',       desc: 'Temperature / Humidity' },
+  bmp280:     { name: 'BMP280',      desc: 'Temperature / Pressure' },
   scd41:      { name: 'SCD41',       desc: 'CO₂ Monitor' },
+  mq2:        { name: 'MQ-2',        desc: 'Combustible gas / smoke' },
+  mq3:        { name: 'MQ-3',        desc: 'Alcohol vapour' },
+  mq7:        { name: 'MQ-7',        desc: 'Carbon monoxide' },
+  mq135:      { name: 'MQ-135',      desc: 'Air quality / gas resistance' },
   ltr390:     { name: 'LTR390',      desc: 'UV / Light Sensor' },
+  bh1750:     { name: 'BH1750',      desc: 'Ambient light' },
   anemometer: { name: 'Anemometer',  desc: 'Wind Speed / Direction' },
-  rainsensor: { name: 'Rain Sensor', desc: 'Rainfall Intensity' },
+  windvane:   { name: 'Wind vane',   desc: 'Wind direction' },
+  rainsensor: { name: 'Rain-drop sensor', desc: 'Rainfall Intensity' },
+  soilmoisture: { name: 'Soil moisture', desc: 'Soil moisture level' },
 };
 
 function formatLatency(ms) {
@@ -107,6 +117,13 @@ export default function DiagnosticsPanel({ siteId }) {
               desc: '',
             };
             const isOnline = sensor.status === 'online';
+            const hasReported = Boolean(sensor.lastPing);
+            const sensorStatus = isOnline ? 'ONLINE' : hasReported ? 'OFFLINE' : 'CONFIGURED';
+            const statusClasses = isOnline
+              ? 'bg-green-500/20 text-green-400'
+              : hasReported
+                ? 'bg-red-500/20 text-red-400'
+                : 'bg-orange-400/15 text-orange-200';
 
             return (
               <div
@@ -114,13 +131,15 @@ export default function DiagnosticsPanel({ siteId }) {
                 className={`flex items-center gap-3 p-3 rounded-xl border transition-all duration-200
                            ${isOnline
                              ? 'bg-green-500/5 border-green-500/15'
-                             : 'bg-red-500/5 border-red-500/15'
+                             : hasReported
+                               ? 'bg-red-500/5 border-red-500/15'
+                               : 'bg-orange-400/[0.04] border-orange-300/15'
                            }`}
               >
                 {/* Status indicator */}
                 <div className="relative">
                   <div
-                    className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}
+                    className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : hasReported ? 'bg-red-500' : 'bg-orange-400'}`}
                   />
                   {isOnline && (
                     <div className="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-ping opacity-30" />
@@ -135,12 +154,9 @@ export default function DiagnosticsPanel({ siteId }) {
                     </span>
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium
-                                 ${isOnline
-                                   ? 'bg-green-500/20 text-green-400'
-                                   : 'bg-red-500/20 text-red-400'
-                                 }`}
+                                 ${statusClasses}`}
                     >
-                      {isOnline ? 'ONLINE' : 'OFFLINE'}
+                      {sensorStatus}
                     </span>
                   </div>
                   <p className="text-xs text-surface-500 mt-0.5">{info.desc}</p>
@@ -167,7 +183,7 @@ export default function DiagnosticsPanel({ siteId }) {
                           : sensor.latencyMs < 30000
                           ? 'bg-amber-500'
                           : 'bg-red-500'
-                        : 'bg-red-500/30'
+                        : hasReported ? 'bg-red-500/30' : 'bg-orange-400/30'
                     }`}
                     style={{
                       width: isOnline

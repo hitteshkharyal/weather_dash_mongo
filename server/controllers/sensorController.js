@@ -1,5 +1,6 @@
 const Sensor = require('../models/Sensor');
 const Reading = require('../models/Reading');
+const { SENSOR_TYPES } = require('../constants/sensors');
 
 // Sensor offline threshold (ms) — 60 seconds
 const OFFLINE_THRESHOLD_MS = 60 * 1000;
@@ -26,7 +27,7 @@ const ingestSensorData = async (req, res) => {
     const site = req.site; // Set by deviceAuth middleware
     const { sensors, timestamp } = req.body;
 
-    if (!sensors || typeof sensors !== 'object') {
+    if (!sensors || typeof sensors !== 'object' || Array.isArray(sensors)) {
       return res.status(400).json({
         success: false,
         message: 'Missing or invalid "sensors" object in payload',
@@ -34,14 +35,58 @@ const ingestSensorData = async (req, res) => {
     }
 
     const now = timestamp ? new Date(timestamp) : new Date();
+    if (Number.isNaN(now.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid timestamp',
+      });
+    }
     const readingData = {};
+    const configuredSensors = await Sensor.find({ siteId: site._id }).select('sensorType');
+    const configuredTypes = new Set(configuredSensors.map(({ sensorType }) => sensorType));
+    const submittedTypes = Object.keys(sensors);
+    const unsupportedTypes = submittedTypes.filter((type) => !SENSOR_TYPES.includes(type));
+    if (unsupportedTypes.length) {
+      return res.status(400).json({
+        success: false,
+        message: `Unsupported sensor types: ${unsupportedTypes.join(', ')}`,
+      });
+    }
+    const unassignedTypes = submittedTypes.filter(
+      (type) => !configuredTypes.has(type)
+    );
+
+    if (unassignedTypes.length) {
+      return res.status(400).json({
+        success: false,
+        message: `Assign these sensors to the site before sending data: ${unassignedTypes.join(', ')}`,
+      });
+    }
+
+    for (const [sensorType, data] of Object.entries(sensors)) {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        return res.status(400).json({
+          success: false,
+          message: `Sensor data for "${sensorType}" must be an object`,
+        });
+      }
+      const invalidFields = Object.entries(data).filter(
+        ([key, value]) => !/^[a-zA-Z][a-zA-Z0-9]*$/.test(key)
+          || typeof value !== 'number'
+          || !Number.isFinite(value)
+      );
+      if (invalidFields.length) {
+        return res.status(400).json({
+          success: false,
+          message: `Sensor data for "${sensorType}" contains invalid numeric fields`,
+        });
+      }
+    }
+
     const sensorUpdates = [];
 
     // Process each sensor type in the payload
     for (const [sensorType, data] of Object.entries(sensors)) {
-      const validTypes = ['bme280', 'scd41', 'ltr390', 'anemometer', 'rainsensor'];
-      if (!validTypes.includes(sensorType)) continue;
-
       // Merge sensor data into the reading
       Object.assign(readingData, data);
 
@@ -50,13 +95,9 @@ const ingestSensorData = async (req, res) => {
         Sensor.findOneAndUpdate(
           { siteId: site._id, sensorType },
           {
-            siteId: site._id,
-            sensorType,
-            status: 'online',
-            lastPing: now,
-            label: `${sensorType.toUpperCase()} @ ${site.name}`,
+            $set: { status: 'online', lastPing: now },
           },
-          { upsert: true, new: true }
+          { new: true }
         )
       );
     }
@@ -140,7 +181,7 @@ const getSensorStatus = async (req, res) => {
         siteId: sensor.siteId,
         sensorType: sensor.sensorType,
         label: sensor.label,
-        status: isOnline ? 'online' : 'offline',
+        status: latencyMs === null ? 'configured' : isOnline ? 'online' : 'offline',
         lastPing: sensor.lastPing,
         latencyMs,
         metadata: sensor.metadata,

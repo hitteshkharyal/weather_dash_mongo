@@ -32,6 +32,13 @@ const readingSchema = new mongoose.Schema(
 
       // Rain Sensor
       rainIntensity: { type: Number },  // 0-100 (0=dry, 100=heavy rain)
+
+      // Analog environmental sensors (raw values require device calibration)
+      mq2Level: { type: Number },
+      mq3Level: { type: Number },
+      mq7Level: { type: Number },
+      mq135Level: { type: Number },
+      soilMoisture: { type: Number },   // 0-100 (device-calibrated estimate)
     },
     // The weather condition inferred at ingestion time
     inferredCondition: {

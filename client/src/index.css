@@ -5,15 +5,15 @@
 /* ─── Base Styles ──────────────────────────────────────────── */
 
 :root {
-  --glass-bg: rgba(15, 23, 42, 0.6);
-  --glass-border: rgba(148, 163, 184, 0.15);
-  --glass-bg-light: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(8, 29, 52, 0.68);
+  --glass-border: rgba(125, 211, 252, 0.18);
+  --glass-bg-light: rgba(186, 230, 253, 0.08);
   --theme-primary: #020617;
   --theme-gradient: linear-gradient(to bottom, rgba(15,23,42,0.8), rgba(2,6,23,1));
   --theme-card-bg: rgba(15, 23, 42, 0.5);
   --theme-card-border: rgba(148, 163, 184, 0.1);
-  --theme-card-hover: rgba(51, 141, 255, 0.3);
-  --theme-card-shadow: rgba(51, 141, 255, 0.1);
+  --theme-card-hover: rgba(56, 189, 248, 0.35);
+  --theme-card-shadow: rgba(249, 115, 22, 0.12);
 }
 
 /* ─── Weather Themes ────────────────────────────────────────── */
@@ -86,7 +86,10 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #020617;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(14, 116, 144, 0.18), transparent 42%),
+    radial-gradient(ellipse at 100% 10%, rgba(234, 88, 12, 0.12), transparent 34%),
+    #061426;
   color: #e2e8f0;
   min-height: 100vh;
   overflow-x: hidden;
@@ -101,6 +104,7 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(2, 8, 23, 0.22), inset 0 1px rgba(224, 242, 254, 0.04);
   }
 
   .glass-sm {
@@ -117,6 +121,7 @@ body {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--theme-card-border);
     border-radius: 20px;
+    box-shadow: 0 16px 44px rgba(2, 8, 23, 0.2), inset 0 1px rgba(224, 242, 254, 0.035);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -136,9 +141,9 @@ body {
 
   .btn-primary {
     @apply px-6 py-3 rounded-xl font-semibold text-white
-           bg-gradient-to-r from-brand-600 to-brand-500
-           hover:from-brand-500 hover:to-brand-400
-           focus:outline-none focus:ring-2 focus:ring-brand-500/50
+           bg-gradient-to-r from-sky-600 to-orange-500
+           hover:from-sky-500 hover:to-orange-400
+           focus:outline-none focus:ring-2 focus:ring-sky-300/50
            transition-all duration-200 transform hover:scale-[1.02]
            active:scale-[0.98] shadow-glow-blue;
   }

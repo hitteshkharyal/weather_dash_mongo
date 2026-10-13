@@ -52,3 +52,18 @@ The API health check is available at `/api/v1/health`. The free Render service m
 4. Set the same Netlify site origin in the Render `FRONTEND_URL` variable.
 
 After changing either service's environment variables, redeploy the relevant service. Authentication uses secure cross-site cookies in production, so the client and API must both use HTTPS.
+
+## Assign sensors and generate ESP firmware
+
+1. Sign in as an administrator and open **Admin Console → Sites**.
+2. Use the radio icon on a site to assign sensors from the supported 15-item environmental sensor catalog. The selected sensors are listed on the site dashboard; unassigned sensor data is rejected by the API.
+3. Use **Firmware** to choose ESP32 or ESP8266, enter the site device API key (pre-filled from the site) and Wi-Fi name/password, and generate `config.h` plus `weather_station.ino`. Keep `config.h` private: it contains Wi-Fi credentials and the site's device API key.
+4. Put both generated files in the same Arduino sketch folder, select the matching board, install the libraries listed below, and compile before flashing.
+
+The firmware supports BME280, DHT11, DHT22, BMP280, SCD41, MQ-2, MQ-3, MQ-7, MQ-135, LTR390, BH1750, rain-drop, soil-moisture, anemometer, and wind-vane sensors. MQ sensors report raw ADC values, not calibrated gas concentration; sensor-specific calibration and warm-up are required before interpreting those readings. ESP8266 has only one analog input, and ESP32 has a limited number of Wi-Fi-compatible ADC inputs, so multiple analog sensors may require an external multiplexer and pin changes. BME280 and BMP280 also need compatible, non-conflicting I2C addresses.
+
+Install the Arduino libraries for Adafruit BME280, Adafruit BMP280, DHT sensor, Adafruit Unified Sensor, Sensirion I2C SCD4x, Adafruit LTR390, BH1750, and ArduinoJson. HTTPS firmware generation requires the API server's root CA certificate in PEM format; certificate verification remains enabled. Local HTTP URLs may be used for development on a trusted network.
+
+## Local test database
+
+Keep the production `MONGODB_URI` in the production service's private environment settings. To run the server against the local test database, use `NODE_ENV=test` and `MONGODB_TEST_URI=mongodb://localhost:27017/weather_test_db`; do not point production deployments at the test URI. The tracked `server/.env.example` documents both variables.

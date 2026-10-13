@@ -1,0 +1,85 @@
+function quote(value) {
+  return JSON.stringify(value);
+}
+
+export function buildFirmwareConfig({
+  board,
+  wifiSsid,
+  wifiPassword,
+  serverUrl,
+  siteId,
+  apiKey,
+  rootCertificate,
+  sensorCatalog,
+  assignedTypes,
+}) {
+  const boardPins = board === 'ESP32'
+    ? [
+        '#if defined(ESP32)',
+        '  #define I2C_SDA_PIN 21',
+        '  #define I2C_SCL_PIN 22',
+        '  #define MQ2_PIN 34',
+        '  #define MQ3_PIN 35',
+        '  #define MQ7_PIN 32',
+        '  #define MQ135_PIN 33',
+        '  #define RAIN_SENSOR_PIN 36',
+        '  #define SOIL_MOISTURE_PIN 39',
+        '  #define WIND_VANE_PIN 25',
+        '  #define DHT11_PIN 16',
+        '  #define DHT22_PIN 17',
+        '  #define ANEMOMETER_PIN 27',
+      ]
+    : [
+        '#if defined(ESP8266)',
+        '  #define I2C_SDA_PIN 4',
+        '  #define I2C_SCL_PIN 5',
+        '  #define MQ2_PIN A0',
+        '  #define MQ3_PIN A0',
+        '  #define MQ7_PIN A0',
+        '  #define MQ135_PIN A0',
+        '  #define RAIN_SENSOR_PIN A0',
+        '  #define SOIL_MOISTURE_PIN A0',
+        '  #define WIND_VANE_PIN A0',
+        '  #define DHT11_PIN 12',
+        '  #define DHT22_PIN 13',
+        '  #define ANEMOMETER_PIN 14',
+      ];
+
+  return [
+    '#ifndef CONFIG_H',
+    '#define CONFIG_H',
+    '',
+    `#define WIFI_SSID ${quote(wifiSsid)}`,
+    `#define WIFI_PASSWORD ${quote(wifiPassword)}`,
+    `#define SERVER_URL ${quote(serverUrl)}`,
+    `#define SITE_ID ${quote(siteId)}`,
+    `#define DEVICE_API_KEY ${quote(apiKey)}`,
+    `#define SERVER_HAS_ROOT_CA ${serverUrl.toLowerCase().startsWith('https://') ? 'true' : 'false'}`,
+    '',
+    `// Select ${board} as the target board in Arduino IDE.`,
+    '',
+    ...sensorCatalog.map((sensor) => (
+      `#define ${sensor.macro} ${assignedTypes.has(sensor.type) ? 'true' : 'false'}`
+    )),
+    '',
+    '#define ENABLE_SIMULATION_MODE false',
+    '',
+    ...boardPins,
+    '#else',
+    '  #error "Select ESP32 or ESP8266 as the Arduino board"',
+    '#endif',
+    '',
+    'static const char SERVER_ROOT_CA[] PROGMEM = R"WEATHER_CA(',
+    rootCertificate,
+    ')WEATHER_CA";',
+    '',
+    '#define SENSOR_READ_INTERVAL_MS 10000',
+    '#define HTTP_TIMEOUT_MS 10000',
+    '#define HTTP_RETRY_COUNT 3',
+    '#define WIFI_RETRY_DELAY_MS 5000',
+    '#define WIFI_MAX_RETRIES 20',
+    '',
+    '#endif',
+    '',
+  ].join('\n');
+}

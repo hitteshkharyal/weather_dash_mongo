@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users, MapPin, Plus, Trash2, Edit3, Key, Link2, Shield,
-  LogOut, LayoutDashboard, ChevronRight, X, Check
+  Users, MapPin, Plus, Trash2, Key, Link2, Shield,
+  LogOut, LayoutDashboard, X, Check, Radio, Code2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import SiteSensorManager from '../components/SiteSensorManager';
+import FirmwareGeneratorModal from '../components/FirmwareGeneratorModal';
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -25,6 +27,8 @@ export default function AdminDashboard() {
   const [sitesLoading, setSitesLoading] = useState(true);
   const [showCreateSite, setShowCreateSite] = useState(false);
   const [newSite, setNewSite] = useState({ name: '', description: '', address: '', latitude: '', longitude: '' });
+  const [sensorSite, setSensorSite] = useState(null);
+  const [firmwareSite, setFirmwareSite] = useState(null);
 
   // Users state
   const [users, setUsers] = useState([]);
@@ -172,7 +176,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-950">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
       <header className="sticky top-0 z-40 glass border-b border-surface-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -237,9 +241,14 @@ export default function AdminDashboard() {
         {tab === 'sites' && (
           <motion.div {...fadeIn}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-display font-semibold text-white">
-                IoT Sites ({sites.length})
-              </h2>
+              <div>
+                <h2 className="text-xl font-display font-semibold text-white">
+                  IoT Sites ({sites.length})
+                </h2>
+                <p className="mt-1 text-sm text-surface-400">
+                  Assign environmental sensors and generate firmware per site.
+                </p>
+              </div>
               <button
                 onClick={() => setShowCreateSite(!showCreateSite)}
                 className="btn-primary flex items-center gap-2 text-sm py-2.5"
@@ -343,6 +352,18 @@ export default function AdminDashboard() {
                             📍 {site.location.address}
                           </p>
                         )}
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {site.sensors?.length ? site.sensors.map((sensor) => (
+                            <span
+                              key={sensor._id}
+                              className="rounded-full border border-sky-200/15 bg-sky-200/[0.06] px-2.5 py-1 text-xs text-sky-100"
+                            >
+                              {sensor.label || sensor.sensorType}
+                            </span>
+                          )) : (
+                            <span className="text-xs text-surface-500">No sensors assigned</span>
+                          )}
+                        </div>
                         <div className="mt-3 flex items-center gap-2">
                           <code className="text-xs font-mono bg-surface-900/50 text-surface-400
                                          px-3 py-1.5 rounded-lg border border-surface-800/50 select-all">
@@ -351,6 +372,25 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 ml-4">
+                        <button
+                          onClick={() => setSensorSite(site)}
+                          aria-label={`Assign sensors to ${site.name}`}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-sky-200 transition-colors hover:bg-sky-300/10"
+                          title="Assign sensors"
+                        >
+                          <Radio size={16} />
+                          <span className="hidden sm:inline">Sensors</span>
+                        </button>
+                        <button
+                          onClick={() => setFirmwareSite(site)}
+                          disabled={!site.sensors?.length}
+                          aria-label={`Generate firmware for ${site.name}`}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-orange-300 transition-colors hover:bg-orange-300/10 disabled:cursor-not-allowed disabled:opacity-30"
+                          title="Generate firmware"
+                        >
+                          <Code2 size={16} />
+                          <span className="hidden sm:inline">Firmware</span>
+                        </button>
                         <button
                           onClick={() => handleRegenerateKey(site._id)}
                           className="p-2 rounded-lg text-amber-400 hover:bg-amber-500/10
@@ -589,6 +629,19 @@ export default function AdminDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+      {sensorSite && (
+        <SiteSensorManager
+          site={sensorSite}
+          onClose={() => setSensorSite(null)}
+          onSaved={fetchSites}
+        />
+      )}
+      {firmwareSite && (
+        <FirmwareGeneratorModal
+          site={firmwareSite}
+          onClose={() => setFirmwareSite(null)}
+        />
+      )}
     </div>
   );
 }

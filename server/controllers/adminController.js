@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Site = require('../models/Site');
+const Sensor = require('../models/Sensor');
+const { SENSOR_CATALOG, SENSOR_TYPES } = require('../constants/sensors');
 
 // ─── USER MANAGEMENT ────────────────────────────────────────────────
 
@@ -116,8 +118,89 @@ const getSites = async (req, res) => {
     const sites = await Site.find()
       .populate('createdBy', 'name email')
       .sort('-createdAt');
+    const sensors = await Sensor.find({ siteId: { $in: sites.map((site) => site._id) } })
+      .select('siteId sensorType label status lastPing')
+      .lean();
+    const sensorsBySite = new Map();
+    for (const sensor of sensors) {
+      const key = sensor.siteId.toString();
+      sensorsBySite.set(key, [...(sensorsBySite.get(key) || []), sensor]);
+    }
+    const data = sites.map((site) => ({
+      ...site.toJSON(),
+      sensors: sensorsBySite.get(site._id.toString()) || [],
+    }));
 
-    res.status(200).json({ success: true, count: sites.length, data: sites });
+    res.status(200).json({ success: true, count: data.length, data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+/**
+ * @route   GET /api/v1/admin/sensors/catalog
+ * @desc    List supported environmental sensors
+ * @access  Admin
+ */
+const getSensorCatalog = (_req, res) => {
+  res.status(200).json({ success: true, count: SENSOR_CATALOG.length, data: SENSOR_CATALOG });
+};
+
+/**
+ * @route   PUT /api/v1/admin/sites/:id/sensors
+ * @desc    Replace the supported sensors assigned to a site
+ * @access  Admin
+ */
+const assignSensorsToSite = async (req, res) => {
+  try {
+    const { sensorTypes } = req.body;
+    if (!Array.isArray(sensorTypes) || new Set(sensorTypes).size !== sensorTypes.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'sensorTypes must be an array of unique sensor type IDs',
+      });
+    }
+
+    const invalidTypes = sensorTypes.filter((type) => !SENSOR_TYPES.includes(type));
+    if (invalidTypes.length) {
+      return res.status(400).json({
+        success: false,
+        message: `Unsupported sensor types: ${invalidTypes.join(', ')}`,
+      });
+    }
+
+    const site = await Site.findById(req.params.id);
+    if (!site) {
+      return res.status(404).json({ success: false, message: 'Site not found' });
+    }
+
+    if (sensorTypes.length) {
+      await Sensor.bulkWrite(
+        sensorTypes.map((sensorType) => ({
+          updateOne: {
+            filter: { siteId: site._id, sensorType },
+            update: {
+              $setOnInsert: {
+                siteId: site._id,
+                sensorType,
+                label: SENSOR_CATALOG.find((item) => item.type === sensorType).name,
+              },
+            },
+            upsert: true,
+          },
+        }))
+      );
+    }
+
+    await Sensor.deleteMany({
+      siteId: site._id,
+      sensorType: { $nin: sensorTypes },
+    });
+
+    const sensors = await Sensor.find({ siteId: site._id })
+      .select('siteId sensorType label status lastPing')
+      .sort('sensorType');
+    res.status(200).json({ success: true, count: sensors.length, data: sensors });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -194,6 +277,7 @@ const deleteSite = async (req, res) => {
       { assignedSites: site._id },
       { $pull: { assignedSites: site._id } }
     );
+    await Sensor.deleteMany({ siteId: site._id });
 
     res.status(200).json({ success: true, message: 'Site deleted' });
   } catch (err) {
@@ -274,6 +358,8 @@ module.exports = {
   updateUser,
   deleteUser,
   getSites,
+  getSensorCatalog,
+  assignSensorsToSite,
   createSite,
   updateSite,
   deleteSite,

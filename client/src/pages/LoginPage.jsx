@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-surface-950">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-transparent">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient orbs */}

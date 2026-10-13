@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { SENSOR_TYPES } = require('../constants/sensors');
 
 const sensorSchema = new mongoose.Schema(
   {
@@ -10,7 +11,7 @@ const sensorSchema = new mongoose.Schema(
     sensorType: {
       type: String,
       required: true,
-      enum: ['bme280', 'scd41', 'ltr390', 'anemometer', 'rainsensor'],
+      enum: SENSOR_TYPES,
     },
     label: {
       type: String,
