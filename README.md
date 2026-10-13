@@ -68,7 +68,7 @@ After changing either service's environment variables, redeploy the relevant ser
 
 The firmware supports BME280, DHT11, DHT22, BMP280, SCD41, MQ-2, MQ-3, MQ-7, MQ-135, LTR390, BH1750, rain-drop, soil-moisture, anemometer, and wind-vane sensors. MQ sensors report raw ADC values, not calibrated gas concentration; sensor-specific calibration and warm-up are required before interpreting those readings. ESP8266 has only one analog input, and ESP32 has a limited number of Wi-Fi-compatible ADC inputs, so multiple analog sensors may require an external multiplexer and pin changes. BME280 and BMP280 also need compatible, non-conflicting I2C addresses.
 
-Install the Arduino libraries for Adafruit BME280, Adafruit BMP280, DHT sensor, Adafruit Unified Sensor, Sensirion I2C SCD4x, Adafruit LTR390, BH1750, and ArduinoJson. HTTPS firmware generation requires the API server's root CA certificate in PEM format; certificate verification remains enabled. Local HTTP URLs may be used for development on a trusted network.
+Install the Arduino libraries for Adafruit BME280, Adafruit BMP280, DHT sensor, Adafruit Unified Sensor, Sensirion I2C SCD4x, Adafruit LTR390, BH1750, and ArduinoJson. The firmware generator pre-fills Google Trust Services GTS Root R4 for the WeatherDash Render API. For another HTTPS host, provide that server's trusted root CA certificate in PEM format; certificate verification remains enabled. Local HTTP URLs may be used for development on a trusted network.
 
 ## Local test database
 
